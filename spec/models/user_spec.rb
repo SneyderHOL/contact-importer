@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  describe '#validations' do
+  describe 'User #validations' do
     let(:user) { build(:user) }
     it 'test that factory object is valid' do
       expect(user).to be_valid
@@ -14,9 +14,11 @@ RSpec.describe User, type: :model do
     end
 
     it 'test that user object has no email' do
-      user.email = ''
-      expect(user).not_to be_valid
-      expect(user.errors[:email]).to include("can't be blank")
+      aggregate_failures do
+        user.email = ''
+        expect(user).not_to be_valid
+        expect(user.errors[:email]).to include("can't be blank")
+      end
     end
 
     it 'test that user object has no valid email' do
@@ -32,10 +34,12 @@ RSpec.describe User, type: :model do
     end
 
     it 'test that user object has repeated email' do
-      user.save
-      invalid_user = build(:user, email: user.email)
-      expect(invalid_user).not_to be_valid
-      expect(invalid_user.errors[:email]).to include("has already been taken")
+      aggregate_failures do
+        user.save
+        invalid_user = build(:user, email: user.email)
+        expect(invalid_user).not_to be_valid
+        expect(invalid_user.errors[:email]).to include("has already been taken")
+      end
     end
   end
 end

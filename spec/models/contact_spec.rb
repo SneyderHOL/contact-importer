@@ -284,6 +284,15 @@ RSpec.describe Contact, type: :model do
       end
     end
 
+    it 'test that has valid email length' do
+      aggregate_failures do
+        contact.email = 'testingwithcontactemailifthelengthislongenoughtostoreindatabase@ggggggggmmmmmmmmmaiiiiiiiiiillllllllll.cccccccoooooooommmmmmm'
+        expect(contact).not_to be_valid
+        expect(contact.errors[:email]).to include("is too long (maximum is 105 characters)")
+        # expect(contact.errors[:email].to include('is too long (maximum is 105 characters)'))
+      end
+    end
+
     it 'test that has invalid email' do
       aggregate_failures do
         contact.email = 'abcd'

@@ -1,7 +1,17 @@
 class ImportFile < ApplicationRecord
+  enum status_options: {
+    on_hold: "on hold",
+    processing: "processing",
+    failed: "failed",
+    finished: "finished",
+    }, _prefix: :status
   belongs_to :user
   has_one_attached :file
-  validates :status, presence: true
+  validates :status, presence: true,
+            inclusion: {
+              in: status_options.values,
+              message: "%{value} is not a valid status"
+            }
   validate :file_type_validation
 
   private

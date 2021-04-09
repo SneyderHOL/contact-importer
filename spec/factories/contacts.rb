@@ -1,12 +1,12 @@
 FactoryBot.define do
   factory :contact do
-    name { "MyString" }
-    birthdate { "MyString" }
-    phone { "MyString" }
-    address { "MyString" }
-    credit_card { "MyString" }
-    franchise { "MyString" }
-    email { "MyString" }
+    name { "John Doe" }
+    birthdate { "20210408" }
+    phone { "(+57) 320 432 05 09" }
+    address { "99 Street #55-55 Main Avenue" }
+    credit_card { "371449635398431" }
+    franchise { "American Express" }
+    sequence(:email) { |n| "contact#{n}@example.com" }
     user { nil }
   end
 end

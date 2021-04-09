@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  describe 'User #validations' do
+  describe '#validations' do
     let(:user) { build(:user) }
     it 'test that factory object is valid' do
       expect(user).to be_valid
@@ -13,7 +13,7 @@ RSpec.describe User, type: :model do
       expect(second_user).to be_valid
     end
 
-    it 'test that user object has no email' do
+    it 'test that has no email' do
       aggregate_failures do
         user.email = ''
         expect(user).not_to be_valid
@@ -21,7 +21,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    it 'test that user object has no valid email' do
+    it 'test that has invalid email' do
       aggregate_failures do
         user.email = 'abcd'
         expect(user).not_to be_valid
@@ -33,7 +33,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    it 'test that user object has repeated email' do
+    it 'test that has repeated email' do
       aggregate_failures do
         user.save
         invalid_user = build(:user, email: user.email)
@@ -41,5 +41,6 @@ RSpec.describe User, type: :model do
         expect(invalid_user.errors[:email]).to include("has already been taken")
       end
     end
+    # password validation
   end
 end

@@ -1,6 +1,5 @@
 class Contact < ApplicationRecord
   belongs_to :user
-  # VALID_A_REGEX = /\A\z/
   VALID_NAME_REGEX = /\A[a-zA-Z -]+\z/
   validates :name, presence: true, format: { with: VALID_NAME_REGEX },
             length: { maximum: 75 }
@@ -20,7 +19,6 @@ class Contact < ApplicationRecord
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
             length: { maximum: 105 }
-  
   
   private
 

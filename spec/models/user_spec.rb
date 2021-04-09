@@ -41,6 +41,5 @@ RSpec.describe User, type: :model do
         expect(invalid_user.errors[:email]).to include("has already been taken")
       end
     end
-    # password validation
   end
 end

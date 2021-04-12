@@ -1,0 +1,2 @@
+class ImportFileController < ApplicationController
+end

@@ -19,22 +19,26 @@ RSpec.describe ImportFile, type: :model do
     end
 
     it 'test that has valid status' do
-      import_file.status = "on hold"
-      expect(import_file).to be_valid
-      import_file.status = "processing"
-      expect(import_file).to be_valid
-      import_file.status = "failed"
-      expect(import_file).to be_valid
-      import_file.status = "finished"
-      expect(import_file).to be_valid
+      aggregate_failures do
+        import_file.status = "on hold"
+        expect(import_file).to be_valid
+        import_file.status = "processing"
+        expect(import_file).to be_valid
+        import_file.status = "failed"
+        expect(import_file).to be_valid
+        import_file.status = "finished"
+        expect(import_file).to be_valid
+      end
     end
 
     it 'test that has invalid status' do
-      import_file.status = "some state"
-      expect(import_file).not_to be_valid
-      expect(import_file.errors[:status]).to include("some state is not a valid status")
-      import_file.status = "21231234"
-      expect(import_file).not_to be_valid
+      aggregate_failures do
+        import_file.status = "some state"
+        expect(import_file).not_to be_valid
+        expect(import_file.errors[:status]).to include("some state is not a valid status")
+        import_file.status = "21231234"
+        expect(import_file).not_to be_valid
+      end
     end
 
     it 'test that import_file has a valid attached file' do

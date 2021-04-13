@@ -197,26 +197,26 @@ RSpec.describe Contact, type: :model do
 
     it 'test that has valid credit_card' do
       aggregate_failures do
-        contact.credit_card = '371449635398431'
+        contact.credit_card = '******8431'
         expect(contact).to be_valid
-        contact.credit_card = '30569309025904'
+        contact.credit_card = '*******5904'
         expect(contact).to be_valid
-        contact.credit_card = '6011111111111117'
+        contact.credit_card = '********1117'
         expect(contact).to be_valid
-        contact.credit_card = '3530111333300000'
+        contact.credit_card = '*********0000'
         expect(contact).to be_valid
-        contact.credit_card = '5555555555554444'
+        contact.credit_card = '**********4444'
         expect(contact).to be_valid
-        contact.credit_card = '4111111111111111'
+        contact.credit_card = '***********1111'
         expect(contact).to be_valid
       end
     end
 
     it 'test that has invalid credit_card length' do
       aggregate_failures do
-        contact.credit_card = '123456789'
+        contact.credit_card = '*****6789'
         expect(contact).not_to be_valid
-        contact.credit_card = '12345678901234567890'
+        contact.credit_card = '****************7890'
         expect(contact).not_to be_valid
       end
     end

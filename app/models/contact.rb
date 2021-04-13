@@ -12,8 +12,8 @@ class Contact < ApplicationRecord
   validates :phone, presence: true
   validate :phone_validation
   validates :address, presence: true, length: { minimum: 7, maximum: 75 }
-  ONLY_NUMBER_REGEX = /\A\d+\z/
-  validates :credit_card, presence: true, format: { with: ONLY_NUMBER_REGEX },
+  VALID_CC_REGEX = /\A[\*]+\d{4}\z/
+  validates :credit_card, presence: true, format: { with: VALID_CC_REGEX },
             length: { minimum: 10, maximum: 19 }
   validates :franchise, presence: true, length: { maximum: 75 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i

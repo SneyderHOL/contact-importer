@@ -1,1 +1,4 @@
 <h1>Welcome to Contact importer</h1>
+<% if user_signed_in? %>
+  <%= link_to "Import Contact", import_path %>
+<% end %>

@@ -13,6 +13,7 @@ class ImportFile < ApplicationRecord
               message: "%{value} is not a valid status"
             }
   validate :file_type_validation
+  attr_accessor :column
 
   private
   

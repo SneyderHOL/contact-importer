@@ -5,16 +5,25 @@
 </div>
 <% if @imported_files.empty? %>
   <div><p>No uploaded files</p></div>
-<% end %>
-<% @imported_files.each do |import| %>
-  <div class="row">
-    <small class="col-sm-1">Filename: </small>
-    <p class="col-sm-3"><%= import.file.filename.to_s %></p>
-    <small class="col-sm-2">File created_at: </small>
-    <p class="col-sm-3"><%= import.created_at %></p>
-    <small class="col-sm-1">Status: </small>
-    <p class="col-sm-2"><%= import.status %></p>
-  </div>
+<% else %>
+  <table>
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th>File created at</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @imported_files.each do |import| %>
+        <tr>
+          <td><%= import.file.filename.to_s %></td>
+          <td><%= import.created_at %></td>
+          <td><%= import.status %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 <% end %>
 
 <div class="flickr_pagination mb-4">

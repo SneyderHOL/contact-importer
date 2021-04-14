@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'user/imported_files', to: 'user#imported_files'
   get 'import', to: 'import_file#import'
   post 'import', to: 'import_file#upload'
-  resources :contacts, only: [:index]
+  get 'user/contacts', to: 'user#contacts'
+  #resources :contacts, only: [:index]
   #get 'failed_registers', to: ''
 end

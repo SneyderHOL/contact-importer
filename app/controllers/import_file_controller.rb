@@ -15,7 +15,7 @@ class ImportFileController < ApplicationController
     end
     byebug
     if @import_file.save
-      @import_file.processing
+      @import_file.processing # use background job
       flash[:notice] = "The file was successfully uploaded"
       redirect_to user_imported_files_path
     else

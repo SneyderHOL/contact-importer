@@ -204,7 +204,7 @@ RSpec.describe ImportFile, type: :model do
     it 'test that return a "finished" ImportFile status after reading a csv by partial bad data' do
       aggregate_failures do
         import_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'partial_bad_data.csv')),
-                                filename: 'bad_data.csv', content_type: 'text/csv')
+                                filename: 'partial_bad_data.csv', content_type: 'text/csv')
         import_file.column = { "name" => "name", "birthdate" => "birthdate", "phone" => "phone",
                             "address" => "address", "credit_card" => "credit_card", "email" => "email" }
         import_file.save
@@ -212,6 +212,55 @@ RSpec.describe ImportFile, type: :model do
         expect(Contact.all.count).to eq(0)
         result = import_file.read_csv_file
         expect(FailedRegister.all.count).to eq(6)
+        expect(Contact.all.count).to eq(2)
+        expect(result).to eq({ status: "finished"})
+      end
+    end
+
+    it 'test that return a "failed" ImportFile status after reading a csv by contact repeated email' do
+      aggregate_failures do
+        import_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'repeated_email.csv')),
+                                filename: 'repeated_email.csv', content_type: 'text/csv')
+        import_file.column = { "name" => "nombre", "birthdate" => "fecha", "phone" => "telefono",
+                              "address" => "direccion", "credit_card" => "tarjeta", "email" => "correo" }
+        import_file.save
+        expect(FailedRegister.all.count).to eq(0)
+        expect(Contact.all.count).to eq(0)
+        result = import_file.read_csv_file
+        expect(FailedRegister.all.count).to eq(0)
+        expect(Contact.all.count).to eq(1)
+        expect(result).to eq({ status: "finished"})
+        result = import_file.read_csv_file
+        expect(FailedRegister.all.count).to eq(1)
+        expect(Contact.all.count).to eq(1)
+        expect(result).to eq({ status: "failed"})
+      end
+    end
+
+    it 'test that return a "finished" ImportFile status after reading a csv by one new contact and one repeated' do
+      aggregate_failures do
+        # initial storage to database 1 contact gets inserted not repeated
+        import_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'repeated_email.csv')),
+                                filename: 'repeated_email.csv', content_type: 'text/csv')
+        import_file.column = { "name" => "nombre", "birthdate" => "fecha", "phone" => "telefono",
+                              "address" => "direccion", "credit_card" => "tarjeta", "email" => "correo" }
+        import_file.save
+        expect(FailedRegister.all.count).to eq(0)
+        expect(Contact.all.count).to eq(0)
+        result = import_file.read_csv_file
+        expect(FailedRegister.all.count).to eq(0)
+        expect(Contact.all.count).to eq(1)
+        expect(result).to eq({ status: "finished"})
+        # second import file should increase failed register (repeated email) and new contact by 1
+        another_import = build(:import_file, user: user)
+        another_import.column = import_file.column
+        another_import.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'one_contact.csv')),
+                                filename: 'one_contact.csv', content_type: 'text/csv')
+        another_import.save
+        expect(FailedRegister.all.count).to eq(0)
+        expect(Contact.all.count).to eq(1)
+        result = another_import.read_csv_file
+        expect(FailedRegister.all.count).to eq(1)
         expect(Contact.all.count).to eq(2)
         expect(result).to eq({ status: "finished"})
       end

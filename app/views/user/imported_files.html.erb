@@ -6,14 +6,14 @@
 <% if @imported_files.empty? %>
   <div><p>No uploaded files</p></div>
 <% end %>
-<% @imported_files.each do |file| %>
-  <div class="">
-    <small>Filename: </small>
-    <p><%= file.filename.to_s %></p>
-    <small>File created_at: </small>
-    <p><%= file.created_at %></p>
-    <small>Status: </small>
-    <p><%= file.status %></p>
+<% @imported_files.each do |import| %>
+  <div class="row">
+    <small class="col-sm-1">Filename: </small>
+    <p class="col-sm-3"><%= import.file.filename.to_s %></p>
+    <small class="col-sm-2">File created_at: </small>
+    <p class="col-sm-3"><%= import.created_at %></p>
+    <small class="col-sm-1">Status: </small>
+    <p class="col-sm-2"><%= import.status %></p>
   </div>
 <% end %>
 

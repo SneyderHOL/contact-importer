@@ -7,18 +7,22 @@ class ImportFileController < ApplicationController
     @import_file = ImportFile.new(import_params)
     @import_file.status = "on hold"
     @import_file.user = current_user
-    headers = []
-    @import_file.column.select do |key, value|
-      headers.push(value.to_i)
-    end
     byebug
-    headers.sort!
-    if headers != (1..6).to_a
-      flash.now[:notice] = "The headers do not match, please try again"
+    unless @import_file.column || @import_file.valid?
+      flash.now[:notice] = "Something went wrong"
       render 'import'
       return
     end
-    
+    byebug
+    if @import_file.save
+      @import_file.processing
+      flash[:notice] = "The file was successfully uploaded"
+      redirect_to user_imported_files_path
+    else
+      flash.now[:notice] = "Something went wrong"
+      render 'import'
+      #return
+    end
   end
 
   private

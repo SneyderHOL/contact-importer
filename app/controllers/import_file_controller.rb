@@ -26,15 +26,27 @@ class ImportFileController < ApplicationController
   def failed_registers
     import_file = ImportFile.find_by(id: params[:id])
     if !(import_file) || (import_file.user != current_user)
-      render :file => "#{Rails.root}/public/404.html",  layout: false, status: :not_found
+      render :file => "#{Rails.root}/public/404.html",
+              layout: false, status: :not_found
       return
     end
-    @failed_registers = import_file.failed_registers.paginate(page: params[:page], per_page: 10)
+    @failed_registers = import_file.failed_registers.
+                          paginate(page: params[:page], per_page: 10)
   end
 
   private
 
   def import_params
-    params.require(:import_file).permit(:file, column: [:name, :birthdate, :phone, :address, :credit_card, :email])
+    params.require(:import_file).
+      permit(:file,
+              column: [
+                :name,
+                :birthdate,
+                :phone,
+                :address,
+                :credit_card,
+                :email
+              ]
+            )
   end
 end

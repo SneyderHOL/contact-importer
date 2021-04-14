@@ -15,7 +15,8 @@ class ImportFile < ApplicationRecord
               in: status_options.values,
               message: "%{value} is not a valid status"
             }
-  validates_size_of :file, maximum: 5.megabytes, message: "should be less than 5MB"
+  validates_size_of :file, maximum: 5.megabytes,
+                    message: "should be less than 5MB"
   validate :file_type_validation
   attr_accessor :column
   has_many :failed_registers
@@ -59,13 +60,24 @@ class ImportFile < ApplicationRecord
       contact = Contact.new(contact_attributes)
       contact.user = user
       if user.contacts.find_by(email: contact.email)
-        set_failed_register("Line #{line} - There is already a contact with that email")
+        set_failed_register(
+          "Line #{line + 1} \
+          - \nRow #{row.to_s} \
+          - \nThere is already a contact with that email"
+        )
         next
       end
       if contact.save
         imported_count += 1
       else
-        set_failed_register("Line #{line} - #{contact.errors.full_messages.join(', ')}")
+        # unless contact.franchise
+        #   a
+        # end
+        set_failed_register(
+          "Line #{line + 1} \
+          - \nRow #{row.to_s} \
+          -\n #{contact.errors.full_messages.join(', ')}"
+        )
       end
     end
     if headers_failed || (imported_count == 0 && line != 0)
@@ -81,7 +93,9 @@ class ImportFile < ApplicationRecord
       contact_attributes[key.to_sym] = row[value]
     end
     franchise_hash = get_franchise(contact_attributes)
-    contact_attributes[:credit_card] = encrypt_cc(contact_attributes[:credit_card])
+    contact_attributes[:credit_card] = encrypt_cc(
+                                        contact_attributes[:credit_card]
+                                      )
     contact_attributes.merge(franchise_hash)
   end
 

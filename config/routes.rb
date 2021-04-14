@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   get 'import', to: 'import_file#import'
   post 'import', to: 'import_file#upload'
   get 'user/contacts', to: 'user#contacts'
+  get 'imported_files/:id/failed_registers', to: 'import_file#failed_registers',
+      as: "failed_registers"
   #resources :contacts, only: [:index]
   #get 'failed_registers', to: ''
 end

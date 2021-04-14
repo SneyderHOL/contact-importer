@@ -12,6 +12,7 @@
         <th>Filename</th>
         <th>File created at</th>
         <th>Status</th>
+        <th colspan="3"></th>
       </tr>
     </thead>
     <tbody>
@@ -20,6 +21,11 @@
           <td><%= import.file.filename.to_s %></td>
           <td><%= import.created_at %></td>
           <td><%= import.status %></td>
+          <% if import.failed_registers.empty? %>
+            <td>No errors</td>
+          <% else %>
+            <td><%= link_to 'Failed registers', failed_registers_path(import) %></td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>

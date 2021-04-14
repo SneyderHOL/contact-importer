@@ -1,0 +1,22 @@
+<h1>Imported Files</h1>
+
+<div class="flickr_pagination">
+  <%= will_paginate @imported_files, :container => false %>
+</div>
+<% if @imported_files.empty? %>
+  <div><p>No uploaded files</p></div>
+<% end %>
+<% @imported_files.each do |file| %>
+  <div class="">
+    <small>Filename: </small>
+    <p><%= file.filename.to_s %></p>
+    <small>File created_at: </small>
+    <p><%= file.created_at %></p>
+    <small>Status: </small>
+    <p><%= file.status %></p>
+  </div>
+<% end %>
+
+<div class="flickr_pagination mb-4">
+  <%= will_paginate @imported_files, :container => false %>
+</div>

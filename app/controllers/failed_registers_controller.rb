@@ -1,0 +1,2 @@
+class FailedRegistersController < ApplicationController
+end

@@ -48,7 +48,7 @@ Run sideqik:
 bundle exec sideqik
 ```
 
-In another console
+In another console (same path inside contact-importer directory)
 
 Run app:
 ``` sh

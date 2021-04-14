@@ -49,7 +49,7 @@ RSpec.describe ImportFile, type: :model do
     end
 
     it 'test that check invalid type attached file' do
-      import_file.file.attach(io: File.open(Rails.root.join('tmp', 'storage', 'gatsby.png')),
+      import_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'gatsby.png')),
                               filename: 'gatsby.png')
       expect(import_file).not_to be_valid
     end
@@ -171,7 +171,7 @@ RSpec.describe ImportFile, type: :model do
 
     it 'test that return a "failed" ImportFile status after reading a csv by bad headers' do
       aggregate_failures do
-        import_file.file.attach(io: File.open(Rails.root.join('tmp', 'storage', 'bad_headers.csv')),
+        import_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'bad_headers.csv')),
                                 filename: 'bad_headers.csv', content_type: 'text/csv')
         import_file.column = { "name" => "name", "birthdate" => "birthdate", "phone" => "phone",
           "address" => "address", "credit_card" => "credit_card", "email" => "email" }
@@ -187,7 +187,7 @@ RSpec.describe ImportFile, type: :model do
 
     it 'test that return a "failed" ImportFile status after reading a csv by bad data' do
       aggregate_failures do
-        import_file.file.attach(io: File.open(Rails.root.join('tmp', 'storage', 'bad_data.csv')),
+        import_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'bad_data.csv')),
                                 filename: 'bad_data.csv', content_type: 'text/csv')
         import_file.column = { "name" => "name", "birthdate" => "birthdate", "phone" => "phone",
           "address" => "address", "credit_card" => "credit_card", "email" => "email" }
@@ -198,6 +198,22 @@ RSpec.describe ImportFile, type: :model do
         expect(FailedRegister.all.count).to eq(8)
         expect(Contact.all.count).to eq(0)
         expect(result).to eq({ status: "failed"})
+      end
+    end
+
+    it 'test that return a "finished" ImportFile status after reading a csv by partial bad data' do
+      aggregate_failures do
+        import_file.file.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'partial_bad_data.csv')),
+                                filename: 'bad_data.csv', content_type: 'text/csv')
+        import_file.column = { "name" => "name", "birthdate" => "birthdate", "phone" => "phone",
+                            "address" => "address", "credit_card" => "credit_card", "email" => "email" }
+        import_file.save
+        expect(FailedRegister.all.count).to eq(0)
+        expect(Contact.all.count).to eq(0)
+        result = import_file.read_csv_file
+        expect(FailedRegister.all.count).to eq(6)
+        expect(Contact.all.count).to eq(2)
+        expect(result).to eq({ status: "finished"})
       end
     end
   end

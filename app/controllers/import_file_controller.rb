@@ -7,21 +7,19 @@ class ImportFileController < ApplicationController
     @import_file = ImportFile.new(import_params)
     @import_file.status = "on hold"
     @import_file.user = current_user
-    byebug
-    unless @import_file.column || @import_file.valid?
-      flash.now[:notice] = "Something went wrong"
+    unless @import_file.column
+      flash.now[:notice] = "Missing columns"
       render 'import'
       return
     end
-    byebug
     if @import_file.save
-      @import_file.processing # use background job
+      import_hash = { id: @import_file.id, column: @import_file.column}
+      AddProcessFileWorker.perform_async(import_hash)
       flash[:notice] = "The file was successfully uploaded"
       redirect_to user_imported_files_path
     else
       flash.now[:notice] = "Something went wrong"
       render 'import'
-      #return
     end
   end
 

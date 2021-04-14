@@ -26,7 +26,7 @@ gem 'will_paginate', '~> 3.3.0'
 # Use credit_card_validations
 gem 'credit_card_validations'
 # Use sidekiq
-# gem 'sidekiq'
+gem 'sidekiq'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

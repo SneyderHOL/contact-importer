@@ -22,7 +22,6 @@ class ImportFile < ApplicationRecord
   
   def processing
     update_status!("processing")
-    #byebug
     hash = read_csv_file
     value = hash[:status]
     update_status!(value)
@@ -59,7 +58,6 @@ class ImportFile < ApplicationRecord
       contact_attributes = get_contact_attributes(row)
       contact = Contact.new(contact_attributes)
       contact.user = user
-      # validar si este contac ya se encuentra en la lista de contactos del usuario
       if user.contacts.find_by(email: contact.email)
         set_failed_register("Line #{line} - There is already a contact with that email")
         next
@@ -69,9 +67,7 @@ class ImportFile < ApplicationRecord
       else
         set_failed_register("Line #{line} - #{contact.errors.full_messages.join(', ')}")
       end
-      #byebug
     end
-    #byebug
     if headers_failed || (imported_count == 0 && line != 0)
       return { status: "failed" }
     else

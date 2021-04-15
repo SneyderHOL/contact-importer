@@ -6,7 +6,7 @@ This project allows for user registration, signin, signout, import csv files, in
 
 For each field it will have the following implementation/validations:
 
-Name -> Only (-) special character will be valid, other spacial characters will be invalid.
+Name -> Only (-) special character will be valid, other special characters will be invalid.
 
 Birthdate -> Only two types of valid format, ISO 8601​ (%Y%m%d ) and (%F), other format will be invalid.
 

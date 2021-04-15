@@ -47,38 +47,46 @@ class ImportFile < ApplicationRecord
     line = 0
     headers_failed = false
     tempfile = file.download
-    CSV.parse(tempfile, headers: true) do |row|
-      if line == 0
-        unless has_valid_headers?(row.headers)
-          set_failed_register("Wrong headers")
-          headers_failed = true
-          break
+    begin
+      CSV.parse(tempfile, headers: true) do |row|
+        if line == 0
+          unless has_valid_headers?(row.headers)
+            set_failed_register("Wrong headers")
+            headers_failed = true
+            break
+          end
+        end
+        line += 1;
+        contact_attributes = get_contact_attributes(row)
+        contact = Contact.new(contact_attributes)
+        contact.user = user
+        if contact.valid?
+          if user.contacts.find_by(email: contact.email)
+            set_failed_register(
+              "Line #{line + 1} \
+              - \nRow #{row.to_s} \
+              - \nthere is already a contact with that email"
+            )
+            next
+          end
+        end
+        if contact.save
+          imported_count += 1
+        else
+          if contact.errors[:franchise].length > 0
+            contact.franchise = "empty"
+            contact.credit_card = "is invalid"
+            contact.valid?
+          end
+          set_failed_register(
+            "Line #{line + 1} \
+            - \nRow #{row.to_s} \
+            -\n #{contact.errors.full_messages.join(', ')}"
+          )
         end
       end
-      line += 1;
-      contact_attributes = get_contact_attributes(row)
-      contact = Contact.new(contact_attributes)
-      contact.user = user
-      if user.contacts.find_by(email: contact.email)
-        set_failed_register(
-          "Line #{line + 1} \
-          - \nRow #{row.to_s} \
-          - \nThere is already a contact with that email"
-        )
-        next
-      end
-      if contact.save
-        imported_count += 1
-      else
-        # unless contact.franchise
-        #   a
-        # end
-        set_failed_register(
-          "Line #{line + 1} \
-          - \nRow #{row.to_s} \
-          -\n #{contact.errors.full_messages.join(', ')}"
-        )
-      end
+    rescue => exception
+      puts exception
     end
     if headers_failed || (imported_count == 0 && line != 0)
       return { status: "failed" }
@@ -92,20 +100,24 @@ class ImportFile < ApplicationRecord
     column.each do |key, value|
       contact_attributes[key.to_sym] = row[value]
     end
-    franchise_hash = get_franchise(contact_attributes)
+    franchise_hash = get_franchise(contact_attributes[:credit_card])
     contact_attributes[:credit_card] = encrypt_cc(
                                         contact_attributes[:credit_card]
                                       )
     contact_attributes.merge(franchise_hash)
   end
 
-  def get_franchise(attributes)
-    CreditCardValidations.add_brand(:discover, {length: 16, prefixes: '6011'})
-    { franchise: attributes[:credit_card].credit_card_brand_name }
+  def get_franchise(cc)
+    if (cc)
+      CreditCardValidations.add_brand(:discover, {length: 16, prefixes: '6011'})
+      return { franchise: cc.credit_card_brand_name }
+    else
+      return { franchise: nil }
+    end
   end
 
-  def set_failed_register(message)
-    register = FailedRegister.new(error: message, import_file: self)
+  def set_failed_register(error_message)
+    register = FailedRegister.new(error: error_message, import_file: self)
     register.save
   end
 
@@ -117,6 +129,10 @@ class ImportFile < ApplicationRecord
   end
 
   def encrypt_cc(cc)
-    '*' * (cc.length - 4) + cc[-4, 4]
+    if(cc)
+      return ('*' * (cc.length - 4) + cc[-4, 4])
+    else
+      return nil
+    end
   end
 end

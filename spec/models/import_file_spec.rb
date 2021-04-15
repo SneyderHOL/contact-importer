@@ -113,17 +113,17 @@ RSpec.describe ImportFile, type: :model do
       aggregate_failures do
         attributes = { name: "James Bond", birthdate: "19750202", phone: "(+07) 123 123 12 12",
                       address: "some street", credit_card: "4111111111111111", "email" => "james@example.com" }
-        expect(import_file.get_franchise(attributes)).to eq({ franchise: "Visa" })
+        expect(import_file.get_franchise(attributes[:credit_card])).to eq({ franchise: "Visa" })
         attributes[:credit_card] = "371449635398431"
-        expect(import_file.get_franchise(attributes)).to eq({ franchise: "American Express" })
+        expect(import_file.get_franchise(attributes[:credit_card])).to eq({ franchise: "American Express" })
         attributes[:credit_card] = "6011111111111117"
-        expect(import_file.get_franchise(attributes)).to eq({ franchise: "Discover" })
+        expect(import_file.get_franchise(attributes[:credit_card])).to eq({ franchise: "Discover" })
         attributes[:credit_card] = "30569309025904"
-        expect(import_file.get_franchise(attributes)).to eq({ franchise: "Diners Club" })
+        expect(import_file.get_franchise(attributes[:credit_card])).to eq({ franchise: "Diners Club" })
         attributes[:credit_card] = "3530111333300000"
-        expect(import_file.get_franchise(attributes)).to eq({ franchise: "JCB" })
+        expect(import_file.get_franchise(attributes[:credit_card])).to eq({ franchise: "JCB" })
         attributes[:credit_card] = "5555555555554444"
-        expect(import_file.get_franchise(attributes)).to eq({ franchise: "MasterCard" })
+        expect(import_file.get_franchise(attributes[:credit_card])).to eq({ franchise: "MasterCard" })
       end
     end
 
@@ -131,7 +131,7 @@ RSpec.describe ImportFile, type: :model do
       aggregate_failures do
         attributes = { name: "James Bond", birthdate: "19750202", phone: "(+07) 123 123 12 12",
                       address: "some street", credit_card: "4411111111111111", "email" => "james@example.com" }
-        expect(import_file.get_franchise(attributes)).to eq({ franchise: nil })
+        expect(import_file.get_franchise(attributes[:credit_card])).to eq({ franchise: nil })
       end
     end
 

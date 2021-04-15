@@ -4,6 +4,25 @@
 
 This project allows for user registration, signin, signout, import csv files, introduce your own file headers (which is mandatory) to match to the app's, check for uploaded files which show the current state of file and any import errors associated with that file, check for imported contacts. This app was made using Ruby on Rails (RoR) framework with focus mostly on backend functionalities but it includes a basic view to use.
 
+For each field it will have the following implementation/validations:
+
+Name -> Only (-) special character will be valid, other spacial characters will be invalid.
+
+Birthdate -> Only two types of valid format, ISO 8601​ (%Y%m%d ) and (%F), other format will be invalid.
+
+Phone -> Only two type of valid format, ​(+00) 000 000 00 00​ and (+00) 000-000-00-00, other format will be invalid.
+
+Address -> Only valid if not empty.
+
+Credit Card -> Only valid if the credit card have a valid franchise and credit card format (length according to franchise)
+
+Email -> Only valid if email has a valid format ex. user@domain.com, with the current restriction, if the user already has a contact with the same email, it will be invalid
+
+Franchise -> (Not necessary in csv file) This field will be recover according to the credit card number by the app.
+
+Any invalid field and contact will not be saved.
+All field are mandatory
+
 ## How users can get started with?
 
 ### Pre-requisites
